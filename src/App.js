@@ -8,13 +8,16 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      gifs: []
+      gifs: [],
+      loading: true
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.performSearch();
+  }
 
-  performSearch = query => {
+  performSearch = (query = "whales") => {
     axios
       .get(
         `http://api.giphy.com/v1/gifs/search?q=${query}&limit=24&api_key=1ToprG2jVnh3MfA47XgyzExYf6k8bMFc`
@@ -22,7 +25,8 @@ class App extends Component {
       .then(response => {
         // handle success
         this.setState({
-          gifs: response.data.data
+          gifs: response.data.data,
+          loading: false
         });
       })
       .catch(error => {
@@ -40,7 +44,11 @@ class App extends Component {
           </div>
         </div>
         <div className="main-content">
-          <GifList data={this.state.gifs} />
+          {this.state.loading ? (
+            <p>Loading...</p>
+          ) : (
+            <GifList data={this.state.gifs} />
+          )}
         </div>
       </div>
     );
